@@ -6,33 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <TextView
-        android:id="@+id/text_home"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="center_horizontal"
-        android:text="Hello"
-        android:textAlignment="center"
-        android:textSize="20sp"
+
+    <ProgressBar
+        android:id="@+id/progressBar_goalProgress_homeFragment"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:indeterminateOnly="false"
+        android:progressDrawable="@drawable/custom_loading_circle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.431"
+        tools:progress="50" />
 
-    <Button
-        android:id="@+id/button"
+    <TextView
+        android:id="@+id/textView_profitRatio_homeFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="155dp"
-        android:layout_marginLeft="155dp"
-        android:layout_marginTop="202dp"
-        android:layout_marginEnd="168dp"
-        android:layout_marginRight="168dp"
-        android:text="This is moar then button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintBottom_toBottomOf="@+id/progressBar_goalProgress_homeFragment"
+        app:layout_constraintEnd_toEndOf="@+id/progressBar_goalProgress_homeFragment"
+        app:layout_constraintStart_toStartOf="@+id/progressBar_goalProgress_homeFragment"
+        app:layout_constraintTop_toTopOf="@+id/progressBar_goalProgress_homeFragment"
+        tools:text="1000/6000" />
 </androidx.constraintlayout.widget.ConstraintLayout>

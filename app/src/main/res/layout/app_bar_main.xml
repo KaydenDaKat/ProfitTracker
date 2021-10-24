@@ -15,8 +15,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.ProfitTracker.PopupOverlay" />
+            android:background="@color/custom_green"
+            app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

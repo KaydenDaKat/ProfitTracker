@@ -20,9 +20,9 @@
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.example.profittracker.ui.gallery.GalleryFragment"
+        android:name="com.example.profittracker.ui.gallery.JobsFragment"
         android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" >
+        tools:layout="@layout/fragment_jobs" >
         <action
             android:id="@+id/action_nav_gallery_to_nav_home"
             app:destination="@id/nav_home" />
@@ -35,7 +35,7 @@
         android:id="@+id/nav_slideshow"
         android:name="com.example.profittracker.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" >
+        tools:layout="@layout/fragment_stocks" >
         <action
             android:id="@+id/action_nav_slideshow_to_nav_home"
             app:destination="@id/nav_home" />

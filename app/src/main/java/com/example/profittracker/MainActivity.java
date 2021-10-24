@@ -52,6 +52,11 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this,"potato", Toast.LENGTH_SHORT).show();
                         return true;
 
+                    case R.id.nav_gallery:
+                        Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_gallery);
+                        Toast.makeText(MainActivity.this,"job", Toast.LENGTH_SHORT).show();
+                        return true;
+
                     case R.id.nav_slideshow:
                         Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_slideshow);
                         Toast.makeText(MainActivity.this,"slide", Toast.LENGTH_SHORT).show();

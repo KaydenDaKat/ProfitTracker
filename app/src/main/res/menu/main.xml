@@ -4,6 +4,23 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Settings"
+
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_addJob"
+        android:orderInCategory="100"
+        android:title="Add Job"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_addStock"
+        android:orderInCategory="100"
+        android:title="Add Stock"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_addCrypto"
+        android:orderInCategory="100"
+        android:title="Add Crypto"
+        app:showAsAction="never" />
+
 </menu>

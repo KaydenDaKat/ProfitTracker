@@ -16,11 +16,14 @@
         <action
             android:id="@+id/action_nav_home_to_nav_slideshow"
             app:destination="@id/nav_slideshow" />
+        <action
+            android:id="@+id/action_nav_home_to_addItemFragment"
+            app:destination="@id/addItemFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.example.profittracker.ui.gallery.JobsFragment"
+        android:name="com.example.profittracker.ui.jobs.JobsFragment"
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_jobs" >
         <action
@@ -29,6 +32,9 @@
         <action
             android:id="@+id/action_nav_gallery_to_nav_slideshow"
             app:destination="@id/nav_slideshow" />
+        <action
+            android:id="@+id/action_nav_gallery_to_addItemFragment"
+            app:destination="@id/addItemFragment" />
     </fragment>
 
     <fragment
@@ -42,5 +48,23 @@
         <action
             android:id="@+id/action_nav_slideshow_to_nav_gallery"
             app:destination="@id/nav_gallery" />
+        <action
+            android:id="@+id/action_nav_slideshow_to_addItemFragment"
+            app:destination="@id/addItemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addItemFragment"
+        android:name="com.example.profittracker.ui.itemsetups.AddItemFragment"
+        android:label="fragment_add_item"
+        tools:layout="@layout/fragment_add_item" >
+        <action
+            android:id="@+id/action_addItemFragment_to_nav_gallery"
+            app:destination="@id/nav_gallery" />
+        <action
+            android:id="@+id/action_addItemFragment_to_nav_slideshow"
+            app:destination="@id/nav_slideshow" />
+        <action
+            android:id="@+id/action_addItemFragment_to_nav_home"
+            app:destination="@id/nav_home" />
     </fragment>
 </navigation>

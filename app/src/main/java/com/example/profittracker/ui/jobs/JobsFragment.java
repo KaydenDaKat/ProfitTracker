@@ -1,4 +1,4 @@
-package com.example.profittracker.ui.gallery;
+package com.example.profittracker.ui.jobs;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -6,12 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.profittracker.ListViewAdapter;
 import com.example.profittracker.MainCellItemClass;

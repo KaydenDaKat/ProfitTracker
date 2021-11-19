@@ -1,4 +1,4 @@
-package com.example.profittracker.ui.gallery;
+package com.example.profittracker.ui.jobs;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

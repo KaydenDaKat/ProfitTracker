@@ -1,5 +1,6 @@
 package com.example.profittracker;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,6 +11,9 @@ import com.example.profittracker.ui.home.HomeFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -21,10 +25,24 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private boolean fragmentID; // tells which fragments are active
+    private List<MainCellItemClass> jobCellItemsList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,5 +145,66 @@ public class MainActivity extends AppCompatActivity {
     public void initialSetup()
     {
         fragmentID = true;
+        try {
+            FileInputStream fileInputStream = openFileInput("JobListFile");
+        } catch (FileNotFoundException e) {
+            writeInitialSaveFiles();
+        }
+        readSaveFiles();
+    }
+
+    public void writeInitialSaveFiles()
+    {
+        List<MainCellItemClass> testList = new ArrayList<>();
+        testList = new ArrayList<>();
+        MainCellItemClass first = new MainCellItemClass();
+        first.setMoney(2000);
+        first.setName("Total");
+        MainCellItemClass second = new MainCellItemClass();
+        second.setMoney(234);
+        second.setName("Chase Bank");
+        testList.add(first);
+        testList.add(second);
+
+        Map<Integer,List<MainCellItemClass>> map = new HashMap<>();
+        map.put(1,testList);
+        Gson gson = new Gson();
+        String json = gson.toJson(map);
+
+
+        try {
+            FileOutputStream fileOutputStream = openFileOutput("JobListFile", MODE_PRIVATE);
+            fileOutputStream.write(json.getBytes());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void readSaveFiles()
+    {
+
+        try {
+            FileInputStream fileOutputStream = openFileInput("JobListFile");
+            InputStreamReader inputStreamReader = new InputStreamReader(fileOutputStream);
+
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String inputString = bufferedReader.readLine();
+
+            TypeToken<Map<Integer,List<MainCellItemClass>>> token = new TypeToken<Map<Integer,List<MainCellItemClass>>>(){};
+
+            Gson gson = new Gson();
+            Map<Integer,List<MainCellItemClass>> map = gson.fromJson(inputString,token.getType());
+
+            jobCellItemsList = new ArrayList<>();
+            jobCellItemsList = map.get(1);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

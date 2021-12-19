@@ -2,12 +2,14 @@ package com.example.profittracker;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Toast;
 
 import com.example.profittracker.ui.home.HomeFragment;
+import com.example.profittracker.ui.itemsetups.AddItemFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -37,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AddItemFragment.OnDataPass {
 
     private AppBarConfiguration mAppBarConfiguration;
     private boolean fragmentID; // tells which fragments are active
@@ -66,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Bundle bundle = new Bundle();
+
                 switch(item.getItemId())
                 {
                     case R.id.nav_home:
@@ -74,7 +78,8 @@ public class MainActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.nav_gallery:
-                        Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_gallery);
+                        bundle.putString("jobCellItemsListJson", createJsonFile(jobCellItemsList));
+                        Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_gallery, bundle);
                         Toast.makeText(MainActivity.this,"job", Toast.LENGTH_SHORT).show();
                         return true;
 
@@ -102,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle bundle = new Bundle();
 
+
         switch(item.getItemId())
         {
             case R.id.action_settings:
@@ -109,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 
             case R.id.action_addJob:
                 bundle.putInt("ID",0);
+                bundle.putString("jsonStringForAddition", createJsonFile(jobCellItemsList));
                 Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.addItemFragment, bundle);
                 fragmentID = false;
                 return true;
@@ -151,35 +158,43 @@ public class MainActivity extends AppCompatActivity {
             writeInitialSaveFiles();
         }
         readSaveFiles();
+        Log.e("HELLO", "INITIALSETUP");
+        Log.e("STRING", jobCellItemsList.get(1).getName());
+        Log.e("STRING", reverseJsonFile(createJsonFile(jobCellItemsList)).get(1).getName());
+
     }
 
     public void writeInitialSaveFiles()
     {
-        List<MainCellItemClass> testList = new ArrayList<>();
-        testList = new ArrayList<>();
+        List<MainCellItemClass> setupList = new ArrayList<>();
         MainCellItemClass first = new MainCellItemClass();
-        first.setMoney(2000);
+        first.setMoney(0.00);
         first.setName("Total");
-        MainCellItemClass second = new MainCellItemClass();
-        second.setMoney(234);
-        second.setName("Chase Bank");
-        testList.add(first);
-        testList.add(second);
+        setupList.add(first);
 
-        Map<Integer,List<MainCellItemClass>> map = new HashMap<>();
-        map.put(1,testList);
-        Gson gson = new Gson();
-        String json = gson.toJson(map);
-
-
+        String jobCellItemsListJson = createJsonFile(setupList);
         try {
             FileOutputStream fileOutputStream = openFileOutput("JobListFile", MODE_PRIVATE);
-            fileOutputStream.write(json.getBytes());
+            fileOutputStream.write(jobCellItemsListJson.getBytes());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void editSaveFiles()
+    {
+        String jobCellItemsListJson = createJsonFile(jobCellItemsList);
+        try {
+            FileOutputStream fileOutputStream = openFileOutput("JobListFile", MODE_PRIVATE);
+            fileOutputStream.write(jobCellItemsListJson.getBytes());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        readSaveFiles();
     }
 
     public void readSaveFiles()
@@ -192,13 +207,8 @@ public class MainActivity extends AppCompatActivity {
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String inputString = bufferedReader.readLine();
 
-            TypeToken<Map<Integer,List<MainCellItemClass>>> token = new TypeToken<Map<Integer,List<MainCellItemClass>>>(){};
-
-            Gson gson = new Gson();
-            Map<Integer,List<MainCellItemClass>> map = gson.fromJson(inputString,token.getType());
-
             jobCellItemsList = new ArrayList<>();
-            jobCellItemsList = map.get(1);
+            jobCellItemsList = reverseJsonFile(inputString);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -206,5 +216,31 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void onDataPass(List<MainCellItemClass> data) {                        // Receives data from fragment and rewrites files
+        Log.e("LOG DATA PASS","hello " + data.get(1).getName());
+        jobCellItemsList = data;
+        editSaveFiles();
+    }
+
+    public String createJsonFile(List<MainCellItemClass> inputList)         // Turns list into JSON
+    {
+        Map<Integer,List<MainCellItemClass>> map = new HashMap<>();
+        map.put(1,inputList);
+        Gson gson = new Gson();
+        String json = gson.toJson(map);
+        return json;
+    }
+
+    public List<MainCellItemClass> reverseJsonFile(String jsonFile)         // Turns Json String into List
+    {
+        TypeToken<Map<Integer,List<MainCellItemClass>>> token = new TypeToken<Map<Integer,List<MainCellItemClass>>>(){};
+
+        Gson gson = new Gson();
+        Map<Integer,List<MainCellItemClass>> map = gson.fromJson(jsonFile,token.getType());
+        List<MainCellItemClass> returnedList = map.get(1);
+        return returnedList;
     }
 }

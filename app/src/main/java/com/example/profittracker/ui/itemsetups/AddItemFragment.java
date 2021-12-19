@@ -1,5 +1,6 @@
 package com.example.profittracker.ui.itemsetups;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -15,9 +16,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.profittracker.MainCellItemClass;
 import com.example.profittracker.R;
 import com.example.profittracker.ui.home.HomeViewModel;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +43,9 @@ public class AddItemFragment extends Fragment {
     private double itemProfit;
 
     private int id;
+    private List<MainCellItemClass> itemCellList;
+
+    private OnDataPass dataPasser;
 
     public AddItemFragment() {
         // Required empty public constructor
@@ -70,6 +82,8 @@ public class AddItemFragment extends Fragment {
     public void onCreateSetUp()
     {
        id = getArguments().getInt("ID");
+       String json = getArguments().getString("jsonStringForAddition");
+       itemCellList = reverseJsonFile(json);
 
        if(id==0) {
            insertNameEditText.setHint("Insert Job Name");
@@ -133,18 +147,57 @@ public class AddItemFragment extends Fragment {
         createItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (id)
+
+                if(!(insertNameEditText.getText().toString().trim().matches("") ||
+                        insertProfitEditText.getText().toString().trim().matches(""))) {
+
+                    processNewList();
+                    switch (id) {
+                        case 0:
+                    passData(itemCellList);
+
+                        case 1:
+
+
+                        case 2:
+
+                    }
+                }
+                else
                 {
-                    case 0:
-
-
-                    case 1:
-
-
-                    case 2:
-
+                    Toast.makeText(getActivity(),"PLEASE FILL IN ALL OF THE FIELDS", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    public interface OnDataPass {                                // Handles the list being sent back to main activity
+        public void onDataPass(List<MainCellItemClass> data);
+    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        dataPasser = (OnDataPass) context;
+    }
+    public void passData(List<MainCellItemClass> data) {
+        dataPasser.onDataPass(data);
+    }
+
+    public void processNewList()
+    {
+        MainCellItemClass item = new MainCellItemClass();
+        item.setName(insertNameEditText.getText().toString());
+        item.setMoney(Double.parseDouble(insertProfitEditText.getText().toString().substring(1)));
+        itemCellList.add(item);
+    }
+
+    public List<MainCellItemClass> reverseJsonFile(String jsonFile)
+    {
+        TypeToken<Map<Integer,List<MainCellItemClass>>> token = new TypeToken<Map<Integer,List<MainCellItemClass>>>(){};
+
+        Gson gson = new Gson();
+        Map<Integer,List<MainCellItemClass>> map = gson.fromJson(jsonFile,token.getType());
+        List<MainCellItemClass> returnedList = map.get(1);
+        return returnedList;
     }
 }

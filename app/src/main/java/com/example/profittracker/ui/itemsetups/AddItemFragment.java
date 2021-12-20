@@ -42,6 +42,9 @@ public class AddItemFragment extends Fragment {
     private String itemName, itemProfitString;
     private double itemProfit;
 
+    private String pastInputString;
+    private boolean mightBeDoubleZero;
+
     private int id;
     private List<MainCellItemClass> itemCellList;
 
@@ -102,11 +105,14 @@ public class AddItemFragment extends Fragment {
     {
         insertProfitEditText.addTextChangedListener(new TextWatcher() { // this all keeps displayed profit from displaying unnecessary numbers
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                pastInputString = s.toString();
+                Log.e(pastInputString,pastInputString);
+            }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                itemProfitString = insertProfitEditText.getText().toString();
+                itemProfitString = s.toString();
+                Log.e(itemProfitString,itemProfitString);
 
                 if(!itemProfitString.contains("$"))
                 {
@@ -121,26 +127,55 @@ public class AddItemFragment extends Fragment {
                     insertProfitEditText.setText("");
                 }
             }
-
             @Override
             public void afterTextChanged(Editable s) {
-                if (itemProfitString.contains(".")) {
-                    int decimalPosition = itemProfitString.indexOf('.');
-                    if (decimalPosition == 1)
-                    {
-                        itemProfitString = "$0.";
-                        insertProfitEditText.setText("$0.");
-                        insertProfitEditText.setSelection(itemProfitString.length());
-                    }
+                if (itemProfitString.indexOf("$") != 0)
+                {
+                    itemProfitString = itemProfitString.substring(1);
+                    insertProfitEditText.setText(itemProfitString);
+                    insertProfitEditText.setSelection(itemProfitString.length());
+                }
+                else {
+                    if (itemProfitString.contains(".")) {
+                        int decimalPosition = itemProfitString.indexOf('.');
+                        if (decimalPosition == 1) {
+                            itemProfitString = "$0.";
+                            insertProfitEditText.setText("$0.");
+                            insertProfitEditText.setSelection(3);
+                            decimalPosition = itemProfitString.indexOf('.');
+                        }
 
-                    int itemProfitStringLength = itemProfitString.length();
-                    if (itemProfitStringLength > decimalPosition + 3) {
+                        if (itemProfitString.length() > decimalPosition + 3) {
 
-                        itemProfitString = itemProfitString.substring(0, decimalPosition + 3);
-                        insertProfitEditText.setText(itemProfitString);
-                        insertProfitEditText.setSelection(itemProfitStringLength - 1);
+                            itemProfitString = itemProfitString.substring(0, decimalPosition + 3);
+                            insertProfitEditText.setText(itemProfitString);
+                            insertProfitEditText.setSelection(itemProfitString.length());
+                        }
                     }
                 }
+            }
+        });
+
+        insertProfitEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER))
+                {
+                    if(itemProfitString.indexOf(".") == itemProfitString.length()-1)
+                    {
+                        itemProfitString = itemProfitString + "00";
+                        insertProfitEditText.setText(itemProfitString);
+                        insertProfitEditText.setSelection(itemProfitString.length());
+                    }
+                    else if (itemProfitString.indexOf(".") == itemProfitString.length()-2)
+                    {
+                        itemProfitString = itemProfitString + "0";
+                        insertProfitEditText.setText(itemProfitString);
+                        insertProfitEditText.setSelection(itemProfitString.length());
+                    }
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -149,7 +184,7 @@ public class AddItemFragment extends Fragment {
             public void onClick(View v) {
 
                 if(!(insertNameEditText.getText().toString().trim().matches("") ||
-                        insertProfitEditText.getText().toString().trim().matches(""))) {
+                        insertProfitEditText.getText().toString().trim().equals("$"))) {
 
                     processNewList();
                     switch (id) {

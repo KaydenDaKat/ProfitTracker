@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         switch(item.getItemId())
         {
             case R.id.action_settings:
+                Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment).navigate(R.id.settingsFragment);
                 return true;
                 
             case R.id.action_addJob:

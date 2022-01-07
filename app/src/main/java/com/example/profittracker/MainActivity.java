@@ -1,24 +1,17 @@
 package com.example.profittracker;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Menu;
 import android.widget.Toast;
 
-import com.example.profittracker.ui.home.HomeFragment;
 import com.example.profittracker.ui.itemsetups.AddItemFragment;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -32,18 +25,17 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements AddItemFragment.OnDataPass {
+public class MainActivity extends AppCompatActivity implements AddItemFragment.OnDataPassFromAddItemFragment, SettingsFragment.OnDataPassFromSettingsFragment {
 
     private AppBarConfiguration mAppBarConfiguration;
     private boolean fragmentID; // tells which fragments are active
-    private List<MainCellItemClass> jobCellItemsList;
+    private List<MainCellItemClass> jobCellItemsList, stockCellItemsList, cryptoCellItemsList, othersCellItemsList, taxcellItemsList;
 
 
     @Override
@@ -111,7 +103,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         switch(item.getItemId())
         {
             case R.id.action_settings:
-                Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment).navigate(R.id.settingsFragment);
+                bundle.putString("jsonJobList", createJsonFile(jobCellItemsList));
+                Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment).navigate(R.id.settingsFragment, bundle);
                 return true;
                 
             case R.id.action_addJob:
@@ -168,15 +161,17 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     public void writeInitialSaveFiles()
     {
         List<MainCellItemClass> setupList = new ArrayList<>();
-        MainCellItemClass first = new MainCellItemClass();
-        first.setMoney(0.00);
-        first.setName("Total");
-        setupList.add(first);
+        MainCellItemClass initialItem = new MainCellItemClass();
+        initialItem.setMoney(0.00);
+        initialItem.setName("Total");
+        setupList.add(initialItem);
 
-        String jobCellItemsListJson = createJsonFile(setupList);
+        String initialCellItemsList = createJsonFile(setupList);
         try {
-            FileOutputStream fileOutputStream = openFileOutput("JobListFile", MODE_PRIVATE);
-            fileOutputStream.write(jobCellItemsListJson.getBytes());
+            FileOutputStream jobFileOutputStream = openFileOutput("JobListFile", MODE_PRIVATE);
+            jobFileOutputStream.write(initialCellItemsList.getBytes());
+            FileOutputStream stockFileOutputStream = openFileOutput("StockListFile", MODE_PRIVATE);
+            stockFileOutputStream.write(initialCellItemsList.getBytes());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -187,9 +182,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     public void editSaveFiles()
     {
         String jobCellItemsListJson = createJsonFile(jobCellItemsList);
+        String stockCellItemsListJson = createJsonFile(stockCellItemsList);
         try {
-            FileOutputStream fileOutputStream = openFileOutput("JobListFile", MODE_PRIVATE);
-            fileOutputStream.write(jobCellItemsListJson.getBytes());
+            FileOutputStream jobFileOutputStream = openFileOutput("JobListFile", MODE_PRIVATE);
+            jobFileOutputStream.write(jobCellItemsListJson.getBytes());
+            FileOutputStream stockFileOutputStream = openFileOutput("StockListFile", MODE_PRIVATE);
+            stockFileOutputStream.write(stockCellItemsListJson.getBytes());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -202,14 +200,23 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     {
 
         try {
-            FileInputStream fileOutputStream = openFileInput("JobListFile");
-            InputStreamReader inputStreamReader = new InputStreamReader(fileOutputStream);
+            FileInputStream jobFileInputStream = openFileInput("JobListFile");
+            FileInputStream stockFileInputStream = openFileInput("StockListFile");
 
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String inputString = bufferedReader.readLine();
+            InputStreamReader jobFileInputReader = new InputStreamReader(jobFileInputStream);
+            InputStreamReader stockInputStreamReader = new InputStreamReader(stockFileInputStream);
+
+            BufferedReader jobBufferedReader = new BufferedReader(jobFileInputReader);
+            BufferedReader stockBufferedReader = new BufferedReader(stockInputStreamReader);
+
+            String jobInputString = jobBufferedReader.readLine();
+            String stockInputString = stockBufferedReader.readLine();
 
             jobCellItemsList = new ArrayList<>();
-            jobCellItemsList = reverseJsonFile(inputString);
+            stockCellItemsList = new ArrayList<>();
+
+            jobCellItemsList = reverseJsonFile(jobInputString);
+            stockCellItemsList = reverseJsonFile(stockInputString);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -220,9 +227,18 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     @Override
-    public void onDataPass(List<MainCellItemClass> data) {                        // Receives data from fragment and rewrites files
-        Log.e("LOG DATA PASS","hello " + data.get(1).getName());
+    public void onDataPassFromAddItemFragment(List<MainCellItemClass> data) {                        // Receives data from AddItemFragments and rewrites files
         jobCellItemsList = data;
+        editSaveFiles();
+    }
+
+    @Override
+    public void onDataPassFromSettingsFragment(List<MainCellItemClass> data) {                        // Receives data from AddItemFragments and rewrites files
+        if(data.get(0).getName().equals("ItWouldTruelyBeAShameIfSomeoneTriedToNameACompanyThisString")) {
+
+        }
+        else {jobCellItemsList = data;}
+
         editSaveFiles();
     }
 

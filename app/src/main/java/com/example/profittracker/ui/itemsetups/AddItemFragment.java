@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.profittracker.MainCellItemClass;
@@ -24,7 +23,6 @@ import com.example.profittracker.ui.home.HomeViewModel;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +46,7 @@ public class AddItemFragment extends Fragment {
     private int id;
     private List<MainCellItemClass> itemCellList;
 
-    private OnDataPass dataPasser;
+    private OnDataPassFromAddItemFragment dataPasser;
 
     public AddItemFragment() {
         // Required empty public constructor
@@ -206,16 +204,16 @@ public class AddItemFragment extends Fragment {
         });
     }
 
-    public interface OnDataPass {                                // Handles the list being sent back to main activity
-        public void onDataPass(List<MainCellItemClass> data);
+    public interface OnDataPassFromAddItemFragment {                                // Handles the list being sent back to main activity
+        public void onDataPassFromAddItemFragment(List<MainCellItemClass> data);
     }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        dataPasser = (OnDataPass) context;
+        dataPasser = (OnDataPassFromAddItemFragment) context;
     }
     public void passData(List<MainCellItemClass> data) {
-        dataPasser.onDataPass(data);
+        dataPasser.onDataPassFromAddItemFragment(data);
     }
 
     public void processNewList()

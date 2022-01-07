@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
     private AppBarConfiguration mAppBarConfiguration;
     private boolean fragmentID; // tells which fragments are active
-    private List<MainCellItemClass> jobCellItemsList, stockCellItemsList, cryptoCellItemsList, othersCellItemsList, taxcellItemsList;
+    private List<MainCellItemClass> jobCellItemsList, stockCellItemsList, cryptoCellItemsList, othersCellItemsList, taxCellItemsList;
 
 
     @Override
@@ -66,18 +66,15 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 {
                     case R.id.nav_home:
                         Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_home);
-                        Toast.makeText(MainActivity.this,"potato", Toast.LENGTH_SHORT).show();
                         return true;
 
                     case R.id.nav_gallery:
                         bundle.putString("jobCellItemsListJson", createJsonFile(jobCellItemsList));
                         Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_gallery, bundle);
-                        Toast.makeText(MainActivity.this,"job", Toast.LENGTH_SHORT).show();
                         return true;
 
                     case R.id.nav_slideshow:
                         Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_slideshow);
-                        Toast.makeText(MainActivity.this,"slide", Toast.LENGTH_SHORT).show();
                         return true;
                 }
                 return false;
@@ -148,14 +145,13 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         fragmentID = true;
         try {
             FileInputStream fileInputStream = openFileInput("JobListFile");
+            Log.e("try", "file already exist");
         } catch (FileNotFoundException e) {
             writeInitialSaveFiles();
+            Log.e("catch", "writing initial file");
         }
         readSaveFiles();
-        Log.e("HELLO", "INITIALSETUP");
-        Log.e("STRING", jobCellItemsList.get(1).getName());
-        Log.e("STRING", reverseJsonFile(createJsonFile(jobCellItemsList)).get(1).getName());
-
+        Log.e("HELLO", "files attempted to be read");
     }
 
     public void writeInitialSaveFiles()
@@ -170,8 +166,19 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         try {
             FileOutputStream jobFileOutputStream = openFileOutput("JobListFile", MODE_PRIVATE);
             jobFileOutputStream.write(initialCellItemsList.getBytes());
+
             FileOutputStream stockFileOutputStream = openFileOutput("StockListFile", MODE_PRIVATE);
             stockFileOutputStream.write(initialCellItemsList.getBytes());
+
+            FileOutputStream cryptoFileOutputStream = openFileOutput("CryptoListFile", MODE_PRIVATE);
+            cryptoFileOutputStream.write(initialCellItemsList.getBytes());
+
+            FileOutputStream othersFileOutputStream = openFileOutput("OthersListFile", MODE_PRIVATE);
+            othersFileOutputStream.write(initialCellItemsList.getBytes());
+
+            FileOutputStream taxFileOutputStream = openFileOutput("TaxListFile", MODE_PRIVATE);
+            taxFileOutputStream.write(initialCellItemsList.getBytes());
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -183,11 +190,25 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     {
         String jobCellItemsListJson = createJsonFile(jobCellItemsList);
         String stockCellItemsListJson = createJsonFile(stockCellItemsList);
+        String cryptoCellItemsListJson = createJsonFile(cryptoCellItemsList);
+        String othersCellItemsListJson = createJsonFile(othersCellItemsList);
+        String taxCellItemsListJson = createJsonFile(taxCellItemsList);
         try {
             FileOutputStream jobFileOutputStream = openFileOutput("JobListFile", MODE_PRIVATE);
             jobFileOutputStream.write(jobCellItemsListJson.getBytes());
+
             FileOutputStream stockFileOutputStream = openFileOutput("StockListFile", MODE_PRIVATE);
             stockFileOutputStream.write(stockCellItemsListJson.getBytes());
+
+            FileOutputStream cryptoFileOutputStream = openFileOutput("CryptoListFile", MODE_PRIVATE);
+            cryptoFileOutputStream.write(cryptoCellItemsListJson.getBytes());
+
+            FileOutputStream othersFileOutputStream = openFileOutput("OthersListFile", MODE_PRIVATE);
+            othersFileOutputStream.write(othersCellItemsListJson.getBytes());
+
+            FileOutputStream taxFileOutputStream = openFileOutput("TaxListFile", MODE_PRIVATE);
+            taxFileOutputStream.write(taxCellItemsListJson.getBytes());
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -202,21 +223,39 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         try {
             FileInputStream jobFileInputStream = openFileInput("JobListFile");
             FileInputStream stockFileInputStream = openFileInput("StockListFile");
+            FileInputStream cryptoFileInputStream = openFileInput("CryptoListFile");
+            FileInputStream othersFileInputStream = openFileInput("OthersListFile");
+            FileInputStream taxFileInputStream = openFileInput("TaxListFile");
 
             InputStreamReader jobFileInputReader = new InputStreamReader(jobFileInputStream);
             InputStreamReader stockInputStreamReader = new InputStreamReader(stockFileInputStream);
+            InputStreamReader cryptoInputStreamReader = new InputStreamReader(cryptoFileInputStream);
+            InputStreamReader othersInputStreamReader = new InputStreamReader(othersFileInputStream);
+            InputStreamReader taxInputStreamReader = new InputStreamReader(taxFileInputStream);
 
             BufferedReader jobBufferedReader = new BufferedReader(jobFileInputReader);
             BufferedReader stockBufferedReader = new BufferedReader(stockInputStreamReader);
+            BufferedReader cryptoBufferedReader = new BufferedReader(cryptoInputStreamReader);
+            BufferedReader othersBufferedReader = new BufferedReader(othersInputStreamReader);
+            BufferedReader taxBufferedReader = new BufferedReader(taxInputStreamReader);
 
             String jobInputString = jobBufferedReader.readLine();
             String stockInputString = stockBufferedReader.readLine();
+            String cryptoInputString = cryptoBufferedReader.readLine();
+            String othersInputString = othersBufferedReader.readLine();
+            String taxInputString = taxBufferedReader.readLine();
 
             jobCellItemsList = new ArrayList<>();
             stockCellItemsList = new ArrayList<>();
+            cryptoCellItemsList = new ArrayList<>();
+            othersCellItemsList = new ArrayList<>();
+            taxCellItemsList = new ArrayList<>();
 
             jobCellItemsList = reverseJsonFile(jobInputString);
             stockCellItemsList = reverseJsonFile(stockInputString);
+            cryptoCellItemsList = reverseJsonFile(cryptoInputString);
+            othersCellItemsList = reverseJsonFile(othersInputString);
+            taxCellItemsList = reverseJsonFile(taxInputString);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

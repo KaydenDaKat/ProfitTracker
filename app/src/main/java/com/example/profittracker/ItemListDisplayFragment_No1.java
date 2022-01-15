@@ -1,4 +1,4 @@
-package com.example.profittracker.ui.jobs;
+package com.example.profittracker;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -11,22 +11,15 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.profittracker.ListViewAdapter;
-import com.example.profittracker.MainCellItemClass;
-import com.example.profittracker.R;
+import com.example.profittracker.ui.jobs.JobsViewModel;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class JobsFragment extends Fragment {
+public class ItemListDisplayFragment_No1 extends Fragment {
 
     private JobsViewModel jobsViewModel;
     ListView listViewItemDisplays;
@@ -37,7 +30,7 @@ public class JobsFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         jobsViewModel =
                 new ViewModelProvider(this).get(JobsViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_jobs, container, false);
+        View root = inflater.inflate(R.layout.fragment_itemlistdisplay_no1, container, false);
         listViewItemDisplays = root.findViewById(R.id.listView_itemDisplays_displayFragment);
 
        cellListTester();

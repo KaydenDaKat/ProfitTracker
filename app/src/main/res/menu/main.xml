@@ -22,5 +22,15 @@
         android:orderInCategory="100"
         android:title="Add Crypto"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_addOther"
+        android:orderInCategory="100"
+        android:title="Add Other"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_addTax"
+        android:orderInCategory="100"
+        android:title="Add Tax"
+        app:showAsAction="never" />
 
 </menu>

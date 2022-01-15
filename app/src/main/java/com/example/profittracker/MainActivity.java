@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.Menu;
-import android.widget.Toast;
 
 import com.example.profittracker.ui.itemsetups.AddItemFragment;
 import com.google.android.material.navigation.NavigationView;
@@ -50,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_job_list, R.id.nav_stock_list)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -68,14 +67,31 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                         Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_home);
                         return true;
 
-                    case R.id.nav_gallery:
+                    case R.id.nav_job_list:
                         bundle.putString("jobCellItemsListJson", createJsonFile(jobCellItemsList));
-                        Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_gallery, bundle);
+                        Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_itemlist_no1, bundle);
                         return true;
 
-                    case R.id.nav_slideshow:
-                        Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_slideshow);
+                    case R.id.nav_stock_list:
+                        bundle.putString("jobCellItemsListJson", createJsonFile(stockCellItemsList));
+                        Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_itemlist_no1,bundle);
                         return true;
+
+                    case R.id.nav_crypto_list:
+                        bundle.putString("jobCellItemsListJson", createJsonFile(cryptoCellItemsList));
+                        Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_itemlist_no1,bundle);
+                        return true;
+
+                    case R.id.nav_others_list:
+                        bundle.putString("jobCellItemsListJson", createJsonFile(othersCellItemsList));
+                        Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_itemlist_no1,bundle);
+                        return true;
+
+                    case R.id.nav_tax_list:
+                        bundle.putString("jobCellItemsListJson", createJsonFile(taxCellItemsList));
+                        Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_itemlist_no1,bundle);
+                        return true;
+
                 }
                 return false;
             }
@@ -122,6 +138,18 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.addItemFragment, bundle);
                 fragmentID = false;
                 return true;
+
+            case R.id.action_addOther:
+                bundle.putInt("ID",3);
+                Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.addItemFragment, bundle);
+                fragmentID = false;
+                return true;
+
+            case R.id.action_addTax:
+                bundle.putInt("ID",4);
+                Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.addItemFragment, bundle);
+                fragmentID = false;
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -132,13 +160,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         if(fragmentID == true)
         {
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();}
+            return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                    || super.onSupportNavigateUp();}
         Navigation.findNavController(MainActivity.this,R.id.nav_host_fragment).navigate(R.id.nav_home);
         fragmentID = true;
         return true;
     }
-
 
     public void initialSetup()
     {

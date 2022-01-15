@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.profittracker.MainActivity;
 import com.example.profittracker.MainCellItemClass;
 import com.example.profittracker.R;
 import com.example.profittracker.ui.home.HomeViewModel;
@@ -181,6 +183,8 @@ public class AddItemFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                String name = insertNameEditText.getText().toString();
+
                 if(!(insertNameEditText.getText().toString().trim().matches("") ||
                         insertProfitEditText.getText().toString().trim().equals("$"))) {
 
@@ -188,7 +192,8 @@ public class AddItemFragment extends Fragment {
                     switch (id) {
                         case 0:
                     passData(itemCellList);
-
+                    Toast.makeText(getActivity(),name + " Has Been Added to The Job List", Toast.LENGTH_LONG).show();
+                    Navigation.findNavController(getView()).navigate(R.id.action_addItemFragment_to_nav_home);
                         case 1:
 
 
